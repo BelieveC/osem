@@ -11,12 +11,13 @@ module Admin
 
     def create
       @target = @conference.targets.new(target_params)
-      if @target.save(target_params)
-        redirect_to admin_conference_targets_path(conference_id: @conference.short_title),
-                    notice: 'Target successfully created.'
-      else
-        flash[:error] = "Creating target failed: #{@target.errors.full_messages.join('. ')}."
-        render :new
+      respond_to do |format|
+        if @target.save
+          flash[:notice] = 'Target successfully created.'
+        else
+          flash[:error] = "Creating target failed: #{@room.errors.full_messages.join('. ')}."
+        end
+        format.js{ render 'message' }
       end
     end
 
